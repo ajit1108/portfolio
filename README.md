@@ -1,0 +1,108 @@
+# Ajit Birajdar — Portfolio
+
+Personal portfolio site: a React single-page app with a Spring Boot API behind it,
+deployed as **Vercel** (static frontend) + **Render** (Docker backend).
+
+```
+Portfolio/
+├── frontend/          React 18 + TypeScript + Vite  → Vercel
+├── backend/           Spring Boot 3 + Java 21       → Render (Docker)
+├── render.yaml        Render Blueprint for the backend
+└── .env.example files document every variable (in frontend/ and backend/)
+```
+
+There is **no database**. Content lives in `frontend/src/data/portfolio.ts`; the
+backend is stateless.
+
+---
+
+## Architecture
+
+| Piece | Technology | Host | Notes |
+|---|---|---|---|
+| UI | React 18, Vite 5, TypeScript | Vercel (Hobby) | Static build in `frontend/dist` |
+| API | Spring Boot 3.3, Java 21 | Render (Free, Docker) | Sleeps after ~15 min idle |
+| AI | Google Gemini REST API | Server-side only | `GEMINI_API_KEY` on Render |
+| Contact | SMTP (`spring-boot-starter-mail`) | Server-side only | Any SMTP provider |
+
+API endpoints:
+
+- `GET  /api/health` — liveness probe, returns `{"status":"UP"}`
+- `POST /api/chat` — `{message, context}` → `{reply, source}`; 503 when `GEMINI_API_KEY` is unset
+- `POST /api/contact` — `{name, email, subject, message}` → `{status:"sent"}`; 503 when SMTP is unset
+
+When the AI key or SMTP settings are absent the site still works: the chatbot falls
+back to keyword answers and the contact form reports an honest error with a mailto link.
+
+---
+
+## Local development
+
+Terminal 1 — backend:
+
+```bash
+cd backend
+mvn spring-boot:run          # http://localhost:8080
+```
+
+Terminal 2 — frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev                  # http://localhost:5173, proxies /api to :8080
+```
+
+Production build check:
+
+```bash
+cd frontend && npm run build
+cd backend  && mvn -DskipTests package
+```
+
+---
+
+## Environment variables
+
+### Vercel (frontend)
+
+| Variable | Example | Purpose |
+|---|---|---|
+| `VITE_API_BASE_URL` | `https://portfolio-api-xxxx.onrender.com` | Backend origin. Leave empty for same-origin dev. No trailing slash. |
+
+Vite inlines this at build time, so **redeploy after changing it**.
+
+### Render (backend)
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `FRONTEND_ORIGINS` | yes | Comma-separated browser origins allowed by CORS, e.g. `https://your-site.vercel.app` |
+| `GEMINI_API_KEY` | optional | Free key from https://aistudio.google.com/apikey |
+| `GEMINI_MODEL` | optional | Defaults to `gemini-2.0-flash` |
+| `MAIL_HOST` / `MAIL_PORT` | optional | SMTP server, e.g. `smtp.gmail.com` / `587` |
+| `MAIL_USERNAME` / `MAIL_PASSWORD` | optional | SMTP credentials. Gmail needs an **App Password**, not your login password |
+| `CONTACT_TO` | optional | Inbox that receives contact messages |
+
+`PORT` is injected by Render automatically. Never commit real values — only the
+`.env.example` files belong in git.
+
+---
+
+## Deploying
+
+1. Push `main` to GitHub.
+2. **Render** → New → Blueprint → select this repo → fill the `sync: false` variables.
+   First build takes ~5 min; the free instance then sleeps when idle (30–60 s cold start).
+3. **Vercel** → New Project → import this repo → set **Root Directory** to `frontend`
+   → add `VITE_API_BASE_URL` → Deploy.
+4. Copy the Vercel production domain into Render's `FRONTEND_ORIGINS`, then redeploy
+   the backend so CORS accepts it.
+
+## Updating the portfolio
+
+- **Content** (bio, projects, skills, education): edit `frontend/src/data/portfolio.ts`,
+  commit, push — Vercel redeploys automatically.
+- **Styles**: `frontend/src/index.css`.
+- **API behaviour**: `backend/src/main/java/com/ajit/portfolio/**` — Render rebuilds
+  the Docker image on push.
+- **New secrets**: add them in the Render/Vercel dashboards, never in git.
