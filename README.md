@@ -3,11 +3,16 @@
 Personal portfolio site: a React single-page app with a Spring Boot API behind it,
 deployed as **Vercel** (static frontend) + **Render** (Docker backend).
 
+**Live:** https://ajit-birajdar.vercel.app
+**API:** https://portfolio-q2np.onrender.com
+**Repo:** https://github.com/ajit1108/portfolio
+
 ```
 Portfolio/
 ├── frontend/          React 18 + TypeScript + Vite  → Vercel
 ├── backend/           Spring Boot 3 + Java 21       → Render (Docker)
 ├── render.yaml        Render Blueprint for the backend
+├── vercel.json        Build config for Git-connected deploys
 └── .env.example files document every variable (in frontend/ and backend/)
 ```
 
@@ -90,13 +95,29 @@ Vite inlines this at build time, so **redeploy after changing it**.
 
 ## Deploying
 
-1. Push `main` to GitHub.
-2. **Render** → New → Blueprint → select this repo → fill the `sync: false` variables.
-   First build takes ~5 min; the free instance then sleeps when idle (30–60 s cold start).
-3. **Vercel** → New Project → import this repo → set **Root Directory** to `frontend`
-   → add `VITE_API_BASE_URL` → Deploy.
-4. Copy the Vercel production domain into Render's `FRONTEND_ORIGINS`, then redeploy
-   the backend so CORS accepts it.
+Both hosts build from `main`, so a push is all that's normally needed:
+
+1. **Render** — service `portfolio-api`, Docker, health check `/api/health`.
+   Free instances sleep after ~15 min idle; the first request then takes 30–60 s.
+2. **Vercel** — project `portfolio`, production domain `ajit-birajdar.vercel.app`.
+   `VITE_API_BASE_URL` is a build-time variable, so changing it requires a redeploy.
+3. Changing the frontend domain means updating `FRONTEND_ORIGINS` on Render, since
+   CORS matches origins exactly (scheme + host, no trailing slash).
+
+Manual frontend deploy without waiting for a push:
+
+```bash
+cd frontend && npx vercel --prod
+```
+
+## Troubleshooting
+
+| Symptom | Cause |
+|---|---|
+| Chat replies look canned | `GEMINI_API_KEY` unset — the keyword fallback is running |
+| Contact form shows "Couldn't send your message" | SMTP vars unset, so nothing can be delivered |
+| First request takes ~45 s | Render free instance was asleep |
+| 403 on `/api/*` from the browser | `FRONTEND_ORIGINS` doesn't match the site's exact origin |
 
 ## Updating the portfolio
 
