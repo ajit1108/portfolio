@@ -5,6 +5,7 @@ import { useTypingEffect } from '../../hooks/useTypingEffect';
 
 export default function Hero() {
   const typed = useTypingEffect(personalInfo.roles, 80, 50, 2200);
+  const cgpa = personalInfo.stats.find((stat) => stat.label === 'CGPA');
 
   const scrollToContact = () => {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
@@ -20,33 +21,30 @@ export default function Hero() {
         <div className="hero-content">
           {/* Left: Text */}
           <div className="hero-text">
-            {/* Availability badge */}
             {personalInfo.available && (
-              <div className="availability-badge" style={{ marginBottom: '1.5rem', width: 'fit-content' }}>
-                <span className="availability-dot" />
+              <div className="availability-badge">
+                <span className="availability-dot" aria-hidden="true" />
                 Available for opportunities
               </div>
             )}
 
-            <h1 className="hero-name">
-              Hi, I'm{' '}
-              <span className="gradient-text">{personalInfo.name}</span>
-            </h1>
+            <p className="hero-eyebrow">Hi, I&apos;m</p>
+
+            <h1 className="hero-name gradient-text">{personalInfo.name}</h1>
 
             <div className="hero-role-container">
-              <span className="hero-role-prefix">I'm a</span>
+              <span className="hero-role-prefix">I&apos;m a</span>
               <span className="hero-role-typed gradient-text">
                 {typed}
-                <span className="cursor" />
+                <span className="cursor" aria-hidden="true" />
               </span>
             </div>
 
             <p className="hero-tagline">{personalInfo.tagline}</p>
 
-            {/* CTA buttons */}
             <div className="hero-cta">
               <button className="btn btn-primary" onClick={scrollToContact}>
-                <Mail size={16} />
+                <Mail size={16} aria-hidden="true" />
                 Get In Touch
               </button>
               <a
@@ -69,7 +67,6 @@ export default function Hero() {
               </a>
             </div>
 
-            {/* Stats bar */}
             <div className="stats-bar">
               {personalInfo.stats.map((stat) => (
                 <div key={stat.label} className="stat-item">
@@ -83,60 +80,46 @@ export default function Hero() {
           </div>
 
           {/* Right: Avatar */}
-          <div className="hero-avatar">
-            <img
-              src={personalInfo.avatarUrl}
-              alt={personalInfo.name}
-              onError={(e) => {
-                // Fallback to a gradient placeholder if image fails
-                const target = e.currentTarget;
-                target.style.display = 'none';
-                const parent = target.parentElement!;
-                parent.style.background = 'linear-gradient(135deg, var(--accent-2), var(--accent), #e879f9)';
-                parent.style.display = 'flex';
-                parent.style.alignItems = 'center';
-                parent.style.justifyContent = 'center';
-                parent.style.fontSize = '4rem';
-                parent.style.fontWeight = '800';
-                parent.style.color = '#fff';
-                parent.style.borderRadius = 'var(--radius-xl)';
-                parent.innerHTML = '<span>AB</span>';
-              }}
-            />
+          <div className="hero-visual">
+            <div className="hero-avatar">
+              <img
+                src={personalInfo.avatarUrl}
+                alt={personalInfo.name}
+                onError={(e) => {
+                  // Gradient monogram fallback if the photo is missing
+                  const target = e.currentTarget;
+                  target.style.display = 'none';
+                  const parent = target.parentElement!;
+                  parent.style.background = 'linear-gradient(135deg, var(--grad-2), var(--accent-deep))';
+                  parent.style.display = 'flex';
+                  parent.style.alignItems = 'center';
+                  parent.style.justifyContent = 'center';
+                  parent.style.fontSize = '4rem';
+                  parent.style.fontWeight = '800';
+                  parent.style.color = '#fff';
+                  parent.style.borderRadius = 'var(--radius-xl)';
+                  parent.innerHTML = '<span>AB</span>';
+                }}
+              />
+            </div>
+
+            <div className="float-chip chip-top" aria-hidden="true">
+              <span className="chip-dot" />
+              Open to work
+            </div>
+            {cgpa && (
+              <div className="float-chip chip-bottom" aria-hidden="true">
+                {cgpa.value} CGPA
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Scroll down indicator */}
-      <button
-        onClick={scrollDown}
-        style={{
-          position: 'absolute',
-          bottom: '2rem',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          background: 'transparent',
-          border: 'none',
-          cursor: 'pointer',
-          color: 'var(--text-muted)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '0.3rem',
-          fontSize: '0.75rem',
-          animation: 'bounce 2s ease-in-out infinite',
-        }}
-        aria-label="Scroll down"
-      >
-        <ArrowDown size={20} />
+      <button className="scroll-cue" onClick={scrollDown} aria-label="Scroll to about section">
+        <span>Scroll</span>
+        <ArrowDown size={18} aria-hidden="true" />
       </button>
-
-      <style>{`
-        @keyframes bounce {
-          0%, 100% { transform: translateX(-50%) translateY(0); }
-          50% { transform: translateX(-50%) translateY(8px); }
-        }
-      `}</style>
     </section>
   );
 }

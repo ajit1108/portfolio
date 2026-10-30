@@ -8,12 +8,14 @@ import Contact from './components/ui/Contact';
 import Footer from './components/ui/Footer';
 import Chatbot from './components/ui/Chatbot';
 import { useScrollProgress, useActiveSection } from './hooks/useTypingEffect';
+import { useTheme } from './hooks/useTheme';
 
 const SECTION_IDS = ['hero', 'about', 'skills', 'projects', 'education', 'contact'];
 
 function App() {
   const scrollProgress = useScrollProgress();
   const activeSection = useActiveSection(SECTION_IDS);
+  const { theme, setTheme } = useTheme();
 
   return (
     <>
@@ -30,7 +32,7 @@ function App() {
       <div className="bg-orb bg-orb-2" aria-hidden="true" />
 
       {/* Fixed header */}
-      <Header activeSection={activeSection} />
+      <Header activeSection={activeSection} theme={theme} onThemeChange={setTheme} />
 
       {/* Main content */}
       <main>

@@ -24,8 +24,7 @@ export const personalInfo = {
   avatarUrl: "/avatar.jpg",
   available: true,
   stats: [
-    { label: "CGPA", value: "8.76", suffix: "" },
-    { label: "DSA Problems", value: "100", suffix: "+" },
+    { label: "CGPA", value: "8.7", suffix: "" },
     { label: "Projects Built", value: "3", suffix: "+" },
     { label: "Technologies", value: "15", suffix: "+" },
   ],
@@ -42,7 +41,7 @@ export const skills = [
     category: "Frontend",
     icon: "Monitor",
     color: "#60a5fa",
-    items: ["React.js", "HTML5", "CSS3", "TypeScript"],
+    items: ["React.js", "HTML5", "CSS3"],
   },
   {
     category: "Backend",
@@ -54,7 +53,7 @@ export const skills = [
     category: "Databases",
     icon: "Database",
     color: "#f472b6",
-    items: ["MongoDB", "MySQL", "PostgreSQL"],
+    items: ["MongoDB", "MySQL"],
   },
   {
     category: "AI / ML",
@@ -80,7 +79,7 @@ export const projects = [
     techStack: ["Spring Boot", "MongoDB", "Machine Learning", "Scikit-learn", "HTML", "CSS"],
     category: "AI/ML",
     github: "https://github.com/ajit1108/calmpulse1",
-    live: "https://calmpulse1.vercel.app",
+    live: "https://calmpulse123.netlify.app/",
     featured: true,
     highlights: [
       "ML prediction service integrated with Spring Boot backend",
@@ -98,7 +97,7 @@ export const projects = [
     techStack: ["Spring Boot", "React", "MySQL", "WebSocket", "STOMP", "SockJS"],
     category: "Full Stack",
     github: "https://github.com/ajit1108/SocialNetwork",
-    live: "https://social-network-dun-nine.vercel.app",
+    live: null,
     featured: true,
     highlights: [
       "Real-time messaging using WebSocket with STOMP and SockJS",
@@ -112,17 +111,34 @@ export const projects = [
     title: "RetailX",
     subtitle: "Retail Management Application",
     description:
-      "A modern retail management application built with TypeScript, designed to streamline product inventory, sales tracking, and business operations for retail environments.",
-    techStack: ["TypeScript", "React", "REST APIs", "Node.js"],
+      "A modern retail management application designed to streamline product inventory, sales tracking, and business operations for retail environments.",
+    techStack: ["React", "REST APIs", "Node.js"],
     category: "Full Stack",
     github: "https://github.com/ajit1108/RetailX_App",
     live: null,
     featured: true,
     highlights: [
-      "Built with TypeScript for type-safe, maintainable code",
       "Product inventory and sales tracking features",
-      "Modern responsive UI for retail operations",
       "REST API integration for data management",
+      "Modern responsive UI for retail operations",
+    ],
+  },
+  {
+    id: 4,
+    title: "Keystone",
+    subtitle: "Field Service Management Platform",
+    description:
+      "A role-based field service management platform where customers raise service requests, dispatchers triage and assign them, technicians work them in the field, and managers close them out. Includes SLA tracking, parts inventory, photo attachments, and reporting.",
+    techStack: ["Spring Boot", "Java", "Spring Security", "MongoDB", "JWT", "Docker"],
+    category: "Full Stack",
+    github: "https://github.com/ajit1108/keystones",
+    live: null,
+    featured: true,
+    highlights: [
+      "Work order lifecycle with status history and role-gated transitions",
+      "SLA tracking with on-track, at-risk and breach notifications",
+      "Parts inventory with atomic stock decrements and overdraw checks",
+      "JWT-secured REST API with authenticated attachments and reports",
     ],
   },
 ];
@@ -134,7 +150,7 @@ export const education = [
     shortName: "KITCOE",
     location: "Kolhapur, Maharashtra",
     period: "2023 – 2027",
-    score: "CGPA: 8.76",
+    score: "CGPA: 8.7",
     type: "graduation",
     current: true,
   },
@@ -160,21 +176,6 @@ export const education = [
   },
 ];
 
-export const achievements = [
-  "Solved 100+ Data Structures and Algorithms problems on LeetCode and other competitive coding platforms.",
-  "Maintained an 8.76 CGPA throughout B.Tech in Computer Science and Business Systems at KITCOE.",
-  "Developed multiple full-stack applications integrating Spring Boot, React, databases, and Machine Learning.",
-];
-
-export const softSkills = [
-  "Problem Solving",
-  "Team Collaboration",
-  "Communication",
-  "Leadership",
-  "Time Management",
-  "Analytical Thinking",
-];
-
 // System prompt context fed to the AI chatbot
 export const aiContext = `
 You are Ajit's AI Portfolio Assistant. Answer questions about Ajit Birajdar's skills, projects, education, and background based only on the following verified information. Be friendly, concise, and professional. If asked something outside this scope, politely say you can only answer portfolio-related questions.
@@ -190,36 +191,40 @@ HEADLINE: Full Stack Java Developer & Machine Learning Enthusiast
 BIO: Full Stack Java Developer and Machine Learning Enthusiast with hands-on experience building full-stack web applications using Java, Spring Boot, React, MongoDB, and Machine Learning. Experienced in developing real-world projects that combine modern web technologies with intelligent solutions. Strong problem-solving skills with a keen interest in software development, backend engineering, and applying technology to solve practical problems.
 
 EDUCATION:
-- B.Tech in CSBS at KITCOE, Kolhapur (2023–2027), CGPA: 8.76 (currently pursuing)
+- B.Tech in CSBS at KITCOE, Kolhapur (2023–2027), CGPA: 8.7 (currently pursuing)
 - 12th at Shivaji Junior College (2023), 66.17%
 - 10th at Shanti English Medium School (2021), 91.80%
 
 SKILLS:
 - Languages: Java, JavaScript, Python, C
-- Frontend: React.js, HTML5, CSS3, TypeScript
+- Frontend: React.js, HTML5, CSS3
 - Backend: Spring Boot, REST APIs, Spring Data JPA, WebSocket
-- Databases: MongoDB, MySQL, PostgreSQL
+- Databases: MongoDB, MySQL
 - AI/ML: Machine Learning, Scikit-learn, Google Gemini
 - Tools: Git, GitHub, VS Code, Jira, Maven, Netlify, Render, Vercel
 
 PROJECTS:
-1. CalmPulse (Stress Burnout Detection System) - Spring Boot, MongoDB, ML, Scikit-learn | GitHub: https://github.com/ajit1108/calmpulse1 | Live: https://calmpulse1.vercel.app
+1. CalmPulse (Stress Burnout Detection System) - Spring Boot, MongoDB, ML, Scikit-learn | GitHub: https://github.com/ajit1108/calmpulse1 | Live: https://calmpulse123.netlify.app/
    - AI-powered burnout detection using Machine Learning
    - RESTful APIs for auth, assessments, and predictions
    - MongoDB for persistent data storage
    
-2. SocialNetwork (Full Stack Social Media Platform) - Spring Boot, React, MySQL, WebSocket | GitHub: https://github.com/ajit1108/SocialNetwork | Live: https://social-network-dun-nine.vercel.app
+2. SocialNetwork (Full Stack Social Media Platform) - Spring Boot, React, MySQL, WebSocket | GitHub: https://github.com/ajit1108/SocialNetwork
    - Real-time messaging using WebSocket with STOMP and SockJS
    - Role-based access control with full authentication
    
-3. RetailX (Retail Management Application) - TypeScript, React, REST APIs | GitHub: https://github.com/ajit1108/RetailX_App
+3. RetailX (Retail Management Application) - React, REST APIs | GitHub: https://github.com/ajit1108/RetailX_App
    - Product inventory and sales tracking
-   - Modern TypeScript-based frontend
+   - Modern responsive frontend
+
+4. Keystone (Field Service Management Platform) - Spring Boot, Java, Spring Security, MongoDB, JWT | GitHub: https://github.com/ajit1108/keystones
+   - Work order lifecycle from request to closure with immutable status history
+   - SLA policies by priority with on-track, at-risk and breach tracking
+   - Parts inventory, photo attachments, notifications and reporting dashboards
+   - Role-based access for customers, dispatchers, technicians and managers
 
 ACHIEVEMENTS:
-- Solved 100+ DSA problems on LeetCode
-- 8.76 CGPA at KITCOE
-- Built 3+ full-stack applications
-
-SOFT SKILLS: Problem Solving, Team Collaboration, Communication, Leadership, Time Management, Analytical Thinking
+- 8.7 CGPA at KITCOE
+- Built 4 full-stack applications
+- Deployed production-ready projects on Vercel and Render
 `;

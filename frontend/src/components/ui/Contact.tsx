@@ -66,8 +66,8 @@ export default function Contact() {
     <section className="section" id="contact">
       <div className="container">
         <div className="section-header">
+          <span className="section-eyebrow">Let's talk</span>
           <h2 className="section-title">Get In Touch</h2>
-          <div className="divider" />
           <p className="section-subtitle">
             Have a project in mind or want to collaborate? Let's talk.
           </p>
