@@ -190,7 +190,7 @@ function getFallbackReply(text: string): string {
     return 'SocialNetwork is a full-stack social media platform using Spring Boot, React, MySQL, and WebSocket (STOMP/SockJS) for real-time messaging. It includes friend requests, posts, and role-based access control.';
   }
   if (q.includes('keystone')) {
-    return 'Keystone is a role-based field service management platform built with Spring Boot, Java, Spring Security, MongoDB, and JWT. It manages work orders end to end with SLA tracking, parts inventory, photo attachments, notifications, and reporting — with separate views for customers, dispatchers, technicians, and managers.';
+    return 'Keystone is a role-based field service management platform built with Spring Boot, Java, Spring Security, MongoDB, and JWT. It manages work orders end to end with SLA tracking, parts inventory, photo attachments, notifications, and reporting — with separate views for customers, dispatchers, technicians, and managers. Try it at keystones-web.onrender.com!';
   }
   if (q.includes('retailx') || q.includes('retail')) {
     return 'RetailX is a retail management app built with React, REST APIs, and Node.js. It handles product inventory, sales tracking, and business operations with a modern responsive UI.';

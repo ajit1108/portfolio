@@ -43,6 +43,10 @@
   --ok-bg: rgba(52, 211, 153, 0.12);
   --ok-bd: rgba(52, 211, 153, 0.3);
 
+  --err-fg: #fca5a5;
+  --err-bd: rgba(248, 113, 113, 0.55);
+  --err-bg: rgba(248, 113, 113, 0.16);
+
   --tag-ai-bg: rgba(251, 146, 60, 0.14);
   --tag-ai-fg: #fbbf24;
   --tag-ai-bd: rgba(251, 146, 60, 0.32);
@@ -91,6 +95,10 @@
   --ok:    #34d399;
   --ok-bg: rgba(52, 211, 153, 0.12);
   --ok-bd: rgba(52, 211, 153, 0.3);
+
+  --err-fg: #fca5a5;
+  --err-bd: rgba(248, 113, 113, 0.55);
+  --err-bg: rgba(248, 113, 113, 0.16);
 
   --tag-ai-bg: rgba(251, 191, 36, 0.13);
   --tag-ai-fg: #fcd34d;
@@ -141,6 +149,10 @@
   --ok-bg: rgba(52, 211, 153, 0.12);
   --ok-bd: rgba(52, 211, 153, 0.3);
 
+  --err-fg: #fca5a5;
+  --err-bd: rgba(248, 113, 113, 0.55);
+  --err-bg: rgba(248, 113, 113, 0.16);
+
   --tag-ai-bg: rgba(251, 191, 36, 0.14);
   --tag-ai-fg: #fcd34d;
   --tag-ai-bd: rgba(251, 191, 36, 0.3);
@@ -189,6 +201,10 @@
   --ok:    #047857;
   --ok-bg: rgba(4, 120, 87, 0.10);
   --ok-bd: rgba(4, 120, 87, 0.25);
+
+  --err-fg: #b91c1c;
+  --err-bd: rgba(220, 38, 38, 0.45);
+  --err-bg: rgba(220, 38, 38, 0.12);
 
   --tag-ai-bg: rgba(249, 115, 22, 0.12);
   --tag-ai-fg: #b45309;
@@ -1499,7 +1515,25 @@ img { max-width: 100%; display: block; }
   box-shadow: 0 0 0 3px var(--accent-dim);
 }
 
+.field-error {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--err-fg);
+}
+
+.form-input[aria-invalid='true'],
+.form-textarea[aria-invalid='true'] {
+  border-color: var(--err-bd);
+}
+
+.form-input[aria-invalid='true']:focus,
+.form-textarea[aria-invalid='true']:focus {
+  box-shadow: 0 0 0 3px var(--err-bg);
+}
+
 .contact-form .btn { align-self: flex-start; }
+.contact-form .btn:disabled { cursor: not-allowed; opacity: 0.8; }
+
 
 .contact-info-card {
   display: flex;

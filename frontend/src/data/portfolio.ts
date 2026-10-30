@@ -132,7 +132,7 @@ export const projects = [
     techStack: ["Spring Boot", "Java", "Spring Security", "MongoDB", "JWT", "Docker"],
     category: "Full Stack",
     github: "https://github.com/ajit1108/keystones",
-    live: null,
+    live: "https://keystones-web.onrender.com/",
     featured: true,
     highlights: [
       "Work order lifecycle with status history and role-gated transitions",
@@ -217,7 +217,7 @@ PROJECTS:
    - Product inventory and sales tracking
    - Modern responsive frontend
 
-4. Keystone (Field Service Management Platform) - Spring Boot, Java, Spring Security, MongoDB, JWT | GitHub: https://github.com/ajit1108/keystones
+4. Keystone (Field Service Management Platform) - Spring Boot, Java, Spring Security, MongoDB, JWT | GitHub: https://github.com/ajit1108/keystones | Live: https://keystones-web.onrender.com/
    - Work order lifecycle from request to closure with immutable status history
    - SLA policies by priority with on-track, at-risk and breach tracking
    - Parts inventory, photo attachments, notifications and reporting dashboards

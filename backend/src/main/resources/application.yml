@@ -10,6 +10,7 @@ spring:
     port: ${MAIL_PORT:587}
     username: ${MAIL_USERNAME:}
     password: ${MAIL_PASSWORD:}
+    default-encoding: UTF-8
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
@@ -22,6 +23,9 @@ app:
     allowed-origins: ${FRONTEND_ORIGINS:http://localhost:5173}
   contact:
     to: ${CONTACT_TO:}
+    from: ${CONTACT_FROM:${MAIL_USERNAME:}}
+    brevo-api-key: ${BREVO_API_KEY:}
+    brevo-api-url: ${BREVO_API_URL:https://api.brevo.com/v3/smtp/email}
   gemini:
     api-key: ${GEMINI_API_KEY:}
     model: ${GEMINI_MODEL:gemini-2.0-flash}
