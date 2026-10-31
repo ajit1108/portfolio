@@ -14,7 +14,7 @@ const SKILL_ICONS: Record<string, React.ReactNode> = {
 
 export default function About() {
   return (
-    <section className="section" id="about">
+    <section className="section section-alt" id="about">
       <div className="container">
         <div className="section-header">
           <span className="section-eyebrow">About me</span>

@@ -1,122 +1,50 @@
-import { ArrowDown, Mail } from 'lucide-react';
-import { GithubIcon, LinkedinIcon } from './GithubIcon';
+import { ArrowDown, FolderGit2, Mail, Phone } from 'lucide-react';
 import { personalInfo } from '../../data/portfolio';
-import { useTypingEffect } from '../../hooks/useTypingEffect';
 
 export default function Hero() {
-  const typed = useTypingEffect(personalInfo.roles, 80, 50, 2200);
-  const cgpa = personalInfo.stats.find((stat) => stat.label === 'CGPA');
-
-  const scrollToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const scrollDown = () => {
-    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
     <section className="hero-section" id="hero">
       <div className="container">
-        <div className="hero-content">
-          {/* Left: Text */}
-          <div className="hero-text">
-            {personalInfo.available && (
-              <div className="availability-badge">
-                <span className="availability-dot" aria-hidden="true" />
-                Available for opportunities
-              </div>
-            )}
+        <div className="hero-text">
+          <p className="hero-eyebrow">Hello, I&apos;m</p>
 
-            <p className="hero-eyebrow">Hi, I&apos;m</p>
+          <h1 className="hero-name">{personalInfo.name}</h1>
 
-            <h1 className="hero-name gradient-text">{personalInfo.name}</h1>
+          <p className="hero-designation">{personalInfo.headline}</p>
 
-            <div className="hero-role-container">
-              <span className="hero-role-prefix">I&apos;m a</span>
-              <span className="hero-role-typed gradient-text">
-                {typed}
-                <span className="cursor" aria-hidden="true" />
+          <div className="hero-contact">
+            <a href={`tel:${personalInfo.phoneHref}`} className="hero-contact-link">
+              <span className="hero-contact-icon" aria-hidden="true">
+                <Phone size={16} />
               </span>
-            </div>
-
-            <p className="hero-tagline">{personalInfo.tagline}</p>
-
-            <div className="hero-cta">
-              <button className="btn btn-primary" onClick={scrollToContact}>
-                <Mail size={16} aria-hidden="true" />
-                Get In Touch
-              </button>
-              <a
-                href={personalInfo.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-outline"
-              >
-                <GithubIcon size={16} />
-                GitHub
-              </a>
-              <a
-                href={personalInfo.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-outline"
-              >
-                <LinkedinIcon size={16} />
-                LinkedIn
-              </a>
-            </div>
-
-            <div className="stats-bar">
-              {personalInfo.stats.map((stat) => (
-                <div key={stat.label} className="stat-item">
-                  <span className="stat-value">
-                    {stat.value}{stat.suffix}
-                  </span>
-                  <span className="stat-label">{stat.label}</span>
-                </div>
-              ))}
-            </div>
+              {personalInfo.phone}
+            </a>
+            <a href={`mailto:${personalInfo.email}`} className="hero-contact-link">
+              <span className="hero-contact-icon" aria-hidden="true">
+                <Mail size={16} />
+              </span>
+              {personalInfo.email}
+            </a>
           </div>
 
-          {/* Right: Avatar */}
-          <div className="hero-visual">
-            <div className="hero-avatar">
-              <img
-                src={personalInfo.avatarUrl}
-                alt={personalInfo.name}
-                onError={(e) => {
-                  // Gradient monogram fallback if the photo is missing
-                  const target = e.currentTarget;
-                  target.style.display = 'none';
-                  const parent = target.parentElement!;
-                  parent.style.background = 'linear-gradient(135deg, var(--grad-2), var(--accent-deep))';
-                  parent.style.display = 'flex';
-                  parent.style.alignItems = 'center';
-                  parent.style.justifyContent = 'center';
-                  parent.style.fontSize = '4rem';
-                  parent.style.fontWeight = '800';
-                  parent.style.color = '#fff';
-                  parent.style.borderRadius = 'var(--radius-xl)';
-                  parent.innerHTML = '<span>AB</span>';
-                }}
-              />
-            </div>
-
-            <div className="float-chip chip-top" aria-hidden="true">
-              <span className="chip-dot" />
-              Open to work
-            </div>
-            {cgpa && (
-              <div className="float-chip chip-bottom" aria-hidden="true">
-                {cgpa.value} CGPA
-              </div>
-            )}
+          <div className="hero-cta">
+            <button className="btn btn-primary" onClick={() => scrollTo('projects')}>
+              <FolderGit2 size={16} aria-hidden="true" />
+              View Projects
+            </button>
+            <button className="btn btn-outline" onClick={() => scrollTo('contact')}>
+              <Mail size={16} aria-hidden="true" />
+              Contact Me
+            </button>
           </div>
         </div>
       </div>
 
-      <button className="scroll-cue" onClick={scrollDown} aria-label="Scroll to about section">
+      <button className="scroll-cue" onClick={() => scrollTo('about')} aria-label="Scroll to about section">
         <span>Scroll</span>
         <ArrowDown size={18} aria-hidden="true" />
       </button>

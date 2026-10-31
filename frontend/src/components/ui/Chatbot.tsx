@@ -208,7 +208,7 @@ function getFallbackReply(text: string): string {
     return 'Ajit is based in Kolhapur, Maharashtra, India.';
   }
   if (q.includes('email') || q.includes('contact') || q.includes('reach')) {
-    return 'You can reach Ajit at ajitbirajdar1108@gmail.com, connect on LinkedIn (linkedin.com/in/ajit-birajdar-5934822b0/), or check his work on GitHub (github.com/ajit1108).';
+    return 'You can reach Ajit at +91 8308129957 or ajitbirajdar1108@gmail.com, connect on LinkedIn (linkedin.com/in/ajit-birajdar-5934822b0/), or check his work on GitHub (github.com/ajit1108).';
   }
   if (q.includes('available') || q.includes('hire') || q.includes('job') || q.includes('opportunit')) {
     return 'Yes! Ajit is currently open to full-time opportunities, internships, and interesting freelance projects. Feel free to reach out via the contact form or email.';

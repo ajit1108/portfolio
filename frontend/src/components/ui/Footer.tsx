@@ -1,4 +1,4 @@
-import { Mail, Heart } from 'lucide-react';
+import { Mail, Phone, Heart } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from './GithubIcon';
 import { personalInfo } from '../../data/portfolio';
 
@@ -14,6 +14,9 @@ export default function Footer() {
           </a>
           <a href={personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="footer-link">
             <LinkedinIcon size={18} /> LinkedIn
+          </a>
+          <a href={`tel:${personalInfo.phoneHref}`} className="footer-link">
+            <Phone size={18} /> {personalInfo.phone}
           </a>
           <a href={`mailto:${personalInfo.email}`} className="footer-link">
             <Mail size={18} /> Email

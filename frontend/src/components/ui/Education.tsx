@@ -3,7 +3,7 @@ import { education } from '../../data/portfolio';
 
 export default function Education() {
   return (
-    <section className="section" id="education">
+    <section className="section section-alt" id="education">
       <div className="container">
         <div className="section-header">
           <span className="section-eyebrow">Academic path</span>

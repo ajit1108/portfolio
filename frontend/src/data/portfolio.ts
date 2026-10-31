@@ -18,10 +18,11 @@ export const personalInfo = {
     "Building scalable backend systems & intelligent web applications with Java, Spring Boot, and React.",
   bio: "Full Stack Java Developer and Machine Learning Enthusiast with hands-on experience building full-stack web applications using Java, Spring Boot, React, MongoDB, and Machine Learning. Experienced in developing real-world projects that combine modern web technologies with intelligent solutions. Strong problem-solving skills with a keen interest in software development, backend engineering, and applying technology to solve practical problems.",
   location: "Kolhapur, Maharashtra, India",
+  phone: "+91 8308129957",
+  phoneHref: "+918308129957",
   email: "ajitbirajdar1108@gmail.com",
   github: "https://github.com/ajit1108",
   linkedin: "https://www.linkedin.com/in/ajit-birajdar-5934822b0/",
-  avatarUrl: "/avatar.jpg",
   available: true,
   stats: [
     { label: "CGPA", value: "8.7", suffix: "" },
@@ -182,6 +183,7 @@ You are Ajit's AI Portfolio Assistant. Answer questions about Ajit Birajdar's sk
 
 NAME: Ajit Birajdar
 LOCATION: Kolhapur, Maharashtra, India
+PHONE: +91 8308129957
 EMAIL: ajitbirajdar1108@gmail.com
 GITHUB: https://github.com/ajit1108
 LINKEDIN: https://www.linkedin.com/in/ajit-birajdar-5934822b0/

@@ -42,7 +42,7 @@ const THEME_COLORS: Record<ThemeId, string> = {
   midnight: '#07070f',
   emerald: '#04120f',
   ember: '#120a05',
-  arctic: '#f6f7fb',
+  arctic: '#ffffff',
 };
 
 const isThemeId = (value: unknown): value is ThemeId =>
@@ -60,7 +60,7 @@ function readStoredTheme(): ThemeId | null {
 function readInitialTheme(): ThemeId {
   const applied = document.documentElement.dataset.theme;
   if (isThemeId(applied)) return applied;
-  return readStoredTheme() ?? 'midnight';
+  return readStoredTheme() ?? 'arctic';
 }
 
 function applyTheme(theme: ThemeId) {

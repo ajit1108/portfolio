@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Mail, Send, MapPin, CheckCircle, AlertCircle } from 'lucide-react';
+import { Mail, Phone, Send, MapPin, CheckCircle, AlertCircle } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from './GithubIcon';
 import { personalInfo } from '../../data/portfolio';
 import { apiUrl } from '../../lib/api';
@@ -218,6 +218,14 @@ export default function Contact() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <a href={`tel:${personalInfo.phoneHref}`} className="contact-link-item">
+                <div className="contact-link-icon"><Phone size={18} /></div>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>Phone</div>
+                  <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>{personalInfo.phone}</div>
+                </div>
+              </a>
+
               <a href={`mailto:${personalInfo.email}`} className="contact-link-item">
                 <div className="contact-link-icon"><Mail size={18} /></div>
                 <div>
