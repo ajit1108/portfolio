@@ -4,23 +4,16 @@
 
 export const personalInfo = {
   name: "Ajit Birajdar",
-  firstName: "Ajit",
   headline: "Full Stack Java Developer",
-  subHeadline: "& Machine Learning Enthusiast",
-  roles: [
-    "Full Stack Developer",
-    "Java Backend Engineer",
-    "Spring Boot Developer",
-    "React Developer",
-    "ML Enthusiast",
-  ],
   tagline:
     "Building scalable backend systems & intelligent web applications with Java, Spring Boot, and React.",
   bio: "Full Stack Java Developer and Machine Learning Enthusiast with hands-on experience building full-stack web applications using Java, Spring Boot, React, MongoDB, and Machine Learning. Experienced in developing real-world projects that combine modern web technologies with intelligent solutions. Strong problem-solving skills with a keen interest in software development, backend engineering, and applying technology to solve practical problems.",
   location: "Kolhapur, Maharashtra, India",
   phone: "+91 8308129957",
   phoneHref: "+918308129957",
+  phoneUrl: "https://wa.me/918308129957",
   email: "ajitbirajdar1108@gmail.com",
+  emailUrl: "https://mail.google.com/mail/?view=cm&fs=1&to=ajitbirajdar1108@gmail.com",
   github: "https://github.com/ajit1108",
   linkedin: "https://www.linkedin.com/in/ajit-birajdar-5934822b0/",
   available: true,
@@ -81,7 +74,6 @@ export const projects = [
     category: "AI/ML",
     github: "https://github.com/ajit1108/calmpulse1",
     live: "https://calmpulse123.netlify.app/",
-    featured: true,
     highlights: [
       "ML prediction service integrated with Spring Boot backend",
       "RESTful APIs for auth, assessment management & predictions",
@@ -99,7 +91,6 @@ export const projects = [
     category: "Full Stack",
     github: "https://github.com/ajit1108/SocialNetwork",
     live: null,
-    featured: true,
     highlights: [
       "Real-time messaging using WebSocket with STOMP and SockJS",
       "RESTful APIs for users, posts, friendships & messaging",
@@ -117,7 +108,6 @@ export const projects = [
     category: "Full Stack",
     github: "https://github.com/ajit1108/RetailX_App",
     live: null,
-    featured: true,
     highlights: [
       "Product inventory and sales tracking features",
       "REST API integration for data management",
@@ -134,7 +124,6 @@ export const projects = [
     category: "Full Stack",
     github: "https://github.com/ajit1108/keystones",
     live: "https://keystones-web.onrender.com/",
-    featured: true,
     highlights: [
       "Work order lifecycle with status history and role-gated transitions",
       "SLA tracking with on-track, at-risk and breach notifications",
@@ -148,7 +137,6 @@ export const education = [
   {
     degree: "B.Tech in Computer Science and Business Systems (CSBS)",
     institution: "Kolhapur Institute of Technology's College of Engineering",
-    shortName: "KITCOE",
     location: "Kolhapur, Maharashtra",
     period: "2023 – 2027",
     score: "CGPA: 8.7",
@@ -158,8 +146,7 @@ export const education = [
   {
     degree: "Higher Secondary Education (12th)",
     institution: "Chh. Shivaji Arts, Science and Commerce Junior College",
-    shortName: "Shivaji Junior College",
-    location: "Maharashtra",
+    location: "Solapur, Maharashtra",
     period: "2023",
     score: "66.17%",
     type: "higher-secondary",
@@ -168,8 +155,7 @@ export const education = [
   {
     degree: "Secondary Education (10th)",
     institution: "Shanti English Medium School",
-    shortName: "Shanti School",
-    location: "Maharashtra",
+    location: "Solapur, Maharashtra",
     period: "2021",
     score: "91.80%",
     type: "secondary",
@@ -194,8 +180,8 @@ BIO: Full Stack Java Developer and Machine Learning Enthusiast with hands-on exp
 
 EDUCATION:
 - B.Tech in CSBS at KITCOE, Kolhapur (2023–2027), CGPA: 8.7 (currently pursuing)
-- 12th at Shivaji Junior College (2023), 66.17%
-- 10th at Shanti English Medium School (2021), 91.80%
+- 12th at Shivaji Junior College, Solapur (2023), 66.17%
+- 10th at Shanti English Medium School, Solapur (2021), 91.80%
 
 SKILLS:
 - Languages: Java, JavaScript, Python, C

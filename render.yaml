@@ -16,7 +16,8 @@ services:
       # Browser origin(s) allowed to call this API — set to your Vercel domain.
       - key: FRONTEND_ORIGINS
         sync: false
-      # Optional: enables real Gemini replies. Blank = frontend keyword fallback.
+      # Optional: enables real Gemini replies. Blank = the UI shows an honest
+      # "not configured" message with Ajit's email and phone.
       - key: GEMINI_API_KEY
         sync: false
       - key: GEMINI_MODEL

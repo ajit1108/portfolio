@@ -12,34 +12,34 @@ export interface ThemeOption {
 export const THEMES: ThemeOption[] = [
   {
     id: 'midnight',
-    name: 'Midnight',
-    hint: 'Violet on ink',
-    swatch: 'linear-gradient(135deg, #a78bfa, #6d28d9)',
-  },
-  {
-    id: 'emerald',
-    name: 'Emerald',
-    hint: 'Teal on forest',
-    swatch: 'linear-gradient(135deg, #5eead4, #0f766e)',
-  },
-  {
-    id: 'ember',
-    name: 'Ember',
-    hint: 'Amber on coal',
-    swatch: 'linear-gradient(135deg, #fcd34d, #c2410c)',
+    name: 'Midnight Blue',
+    hint: 'Blue on navy',
+    swatch: 'linear-gradient(135deg, #60a5fa, #1e3a8a)',
   },
   {
     id: 'arctic',
-    name: 'Arctic',
-    hint: 'Indigo on light',
-    swatch: 'linear-gradient(135deg, #e2e8f0, #4f46e5)',
+    name: 'Purple Gradient',
+    hint: 'Violet on white',
+    swatch: 'linear-gradient(135deg, #f5f3ff, #7c3aed)',
+  },
+  {
+    id: 'emerald',
+    name: 'Emerald Green',
+    hint: 'Green on forest',
+    swatch: 'linear-gradient(135deg, #34d399, #065f46)',
+  },
+  {
+    id: 'ember',
+    name: 'Sunset Orange',
+    hint: 'Amber on dusk',
+    swatch: 'linear-gradient(135deg, #fbbf24, #c2410c)',
   },
 ];
 
 export const THEME_STORAGE_KEY = 'ajit-portfolio-theme';
 
 const THEME_COLORS: Record<ThemeId, string> = {
-  midnight: '#07070f',
+  midnight: '#060b1a',
   emerald: '#04120f',
   ember: '#120a05',
   arctic: '#ffffff',
@@ -60,7 +60,7 @@ function readStoredTheme(): ThemeId | null {
 function readInitialTheme(): ThemeId {
   const applied = document.documentElement.dataset.theme;
   if (isThemeId(applied)) return applied;
-  return readStoredTheme() ?? 'arctic';
+  return readStoredTheme() ?? 'midnight';
 }
 
 function applyTheme(theme: ThemeId) {

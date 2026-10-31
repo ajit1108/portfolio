@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { ExternalLink, Star } from 'lucide-react';
+import { ExternalLink, FolderGit2 } from 'lucide-react';
 import { GithubIcon } from './GithubIcon';
+import Reveal from './Reveal';
+import SectionHeading from './SectionHeading';
 import { projects } from '../../data/portfolio';
 
 const ALL_CATEGORIES = ['All', ...Array.from(new Set(projects.map((p) => p.category)))];
@@ -19,90 +21,101 @@ export default function Projects() {
   };
 
   return (
-    <section className="section" id="projects">
-      <div className="container">
-        <div className="section-header">
-          <span className="section-eyebrow">Selected work</span>
-          <h2 className="section-title">Projects</h2>
-          <p className="section-subtitle">Real-world applications I've built from the ground up.</p>
-        </div>
+    <section className="section section-alt projects-section" id="projects">
+      <div className="projects-glow" aria-hidden="true" />
 
-        {/* Filter tabs */}
-        <div className="filter-tabs">
+      <div className="container">
+        <SectionHeading
+          icon={FolderGit2}
+          eyebrow="Selected work"
+          title="Projects"
+          subtitle="Real-world applications I've designed and built from the ground up."
+        />
+
+        <div className="filter-tabs" role="group" aria-label="Filter projects by category">
           {ALL_CATEGORIES.map((cat) => (
             <button
               key={cat}
+              type="button"
               className={`filter-tab ${activeFilter === cat ? 'active' : ''}`}
               onClick={() => setActiveFilter(cat)}
+              aria-pressed={activeFilter === cat}
             >
               {cat}
             </button>
           ))}
         </div>
 
-        {/* Cards */}
-        <div className="projects-grid">
-          {filtered.map((project) => (
-            <article className="project-card" key={project.id}>
-              {/* Top row: category + featured star */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span className={`project-category-tag ${tagClass(project.category)}`}>
-                  {project.category}
-                </span>
-                {project.featured && (
-                  <Star size={14} fill="var(--accent-bright)" color="var(--accent-bright)" />
-                )}
-              </div>
+        <div className="projects-grid" key={activeFilter}>
+          {filtered.map((project, index) => (
+            <Reveal key={project.id} delay={index * 70}>
+              <article className="project-card">
+                <div className="project-top">
+                  <span className={`project-category-tag ${tagClass(project.category)}`}>
+                    {project.category}
+                  </span>
+                  <span className="project-index" aria-hidden="true">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                </div>
 
-              {/* Title */}
-              <div>
-                <h3 className="project-title">{project.title}</h3>
-                <p className="project-subtitle">{project.subtitle}</p>
-              </div>
+                <div>
+                  <h3 className="project-title">{project.title}</h3>
+                  <p className="project-subtitle">{project.subtitle}</p>
+                </div>
 
-              {/* Description */}
-              <p className="project-description">{project.description}</p>
+                <p className="project-description">{project.description}</p>
 
-              {/* Highlights */}
-              <ul className="project-highlights">
-                {project.highlights.map((h, i) => (
-                  <li key={i}>{h}</li>
-                ))}
-              </ul>
+                <div className="project-block">
+                  <p className="project-label">Key highlights</p>
+                  <ul className="project-highlights">
+                    {project.highlights.map((highlight, i) => (
+                      <li key={i}>{highlight}</li>
+                    ))}
+                  </ul>
+                </div>
 
-              {/* Tech stack */}
-              <div className="project-tech-stack">
-                {project.techStack.map((tech) => (
-                  <span key={tech} className="project-tech-tag">{tech}</span>
-                ))}
-              </div>
+                <div className="project-block">
+                  <p className="project-label">Technologies</p>
+                  <div className="project-tech-stack">
+                    {project.techStack.map((tech) => (
+                      <span key={tech} className="project-tech-tag">{tech}</span>
+                    ))}
+                  </div>
+                </div>
 
-              {/* Links */}
-              <div className="project-links">
-                <a
-                  href={project.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="project-link"
-                >
-                  <GithubIcon size={14} />
-                  Source
-                </a>
-                {project.live && (
+                <div className="project-links">
                   <a
-                    href={project.live}
+                    href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="project-link"
+                    className="project-action"
+                    aria-label={`View ${project.title} source code on GitHub (opens in a new tab)`}
                   >
-                    <ExternalLink size={14} />
-                    Live Demo
+                    <GithubIcon size={15} />
+                    GitHub
                   </a>
-                )}
-              </div>
-            </article>
+                  {project.live && (
+                    <a
+                      href={project.live}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="project-action project-action-primary"
+                      aria-label={`View ${project.title} live demo (opens in a new tab)`}
+                    >
+                      <ExternalLink size={15} />
+                      Live Demo
+                    </a>
+                  )}
+                </div>
+              </article>
+            </Reveal>
           ))}
         </div>
+
+        {filtered.length === 0 && (
+          <p className="projects-empty">No projects found for this filter.</p>
+        )}
       </div>
     </section>
   );

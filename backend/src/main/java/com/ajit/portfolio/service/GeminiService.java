@@ -35,6 +35,7 @@ public class GeminiService {
             """;
 
     private final String apiKey;
+    private final String apiBaseUrl;
     private final String model;
     private final int timeoutSeconds;
     private final ObjectMapper mapper = new ObjectMapper();
@@ -44,9 +45,13 @@ public class GeminiService {
 
     public GeminiService(
             @Value("${app.gemini.api-key:}") String apiKey,
+            @Value("${app.gemini.api-url:https://generativelanguage.googleapis.com/v1beta}") String apiBaseUrl,
             @Value("${app.gemini.model:gemini-2.0-flash}") String model,
             @Value("${app.gemini.timeout-seconds:20}") int timeoutSeconds) {
         this.apiKey = apiKey;
+        this.apiBaseUrl = apiBaseUrl.endsWith("/")
+                ? apiBaseUrl.substring(0, apiBaseUrl.length() - 1)
+                : apiBaseUrl;
         this.model = model;
         this.timeoutSeconds = timeoutSeconds;
     }
@@ -62,12 +67,12 @@ public class GeminiService {
         }
 
         String payload = buildPayload(message, context);
-        URI uri = URI.create("https://generativelanguage.googleapis.com/v1beta/models/"
-                + model + ":generateContent?key=" + apiKey);
+        URI uri = URI.create(apiBaseUrl + "/models/" + model + ":generateContent");
 
         HttpRequest request = HttpRequest.newBuilder(uri)
                 .timeout(Duration.ofSeconds(timeoutSeconds))
                 .header("Content-Type", "application/json")
+                .header("x-goog-api-key", apiKey)
                 .POST(HttpRequest.BodyPublishers.ofString(payload))
                 .build();
 

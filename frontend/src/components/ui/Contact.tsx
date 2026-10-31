@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Mail, Phone, Send, MapPin, CheckCircle, AlertCircle } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from './GithubIcon';
+import SectionHeading from './SectionHeading';
 import { personalInfo } from '../../data/portfolio';
 import { apiUrl } from '../../lib/api';
 
@@ -117,15 +118,14 @@ export default function Contact() {
   };
 
   return (
-    <section className="section" id="contact">
+    <section className="section section-alt" id="contact">
       <div className="container">
-        <div className="section-header">
-          <span className="section-eyebrow">Let's talk</span>
-          <h2 className="section-title">Get In Touch</h2>
-          <p className="section-subtitle">
-            Have a project in mind or want to collaborate? Let's talk.
-          </p>
-        </div>
+        <SectionHeading
+          icon={Send}
+          eyebrow="Let's talk"
+          title="Get In Touch"
+          subtitle="Have a project in mind, a role to discuss, or just want to say hello? Send a message and I'll reply by email."
+        />
 
         <div className="contact-grid">
           {/* Form */}
@@ -218,7 +218,13 @@ export default function Contact() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <a href={`tel:${personalInfo.phoneHref}`} className="contact-link-item">
+              <a
+                href={personalInfo.phoneUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="contact-link-item"
+                title="Chat on WhatsApp (opens in a new tab)"
+              >
                 <div className="contact-link-icon"><Phone size={18} /></div>
                 <div>
                   <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>Phone</div>
@@ -226,7 +232,13 @@ export default function Contact() {
                 </div>
               </a>
 
-              <a href={`mailto:${personalInfo.email}`} className="contact-link-item">
+              <a
+                href={personalInfo.emailUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="contact-link-item"
+                title="Compose email in Gmail (opens in a new tab)"
+              >
                 <div className="contact-link-icon"><Mail size={18} /></div>
                 <div>
                   <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>Email</div>

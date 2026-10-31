@@ -2,12 +2,13 @@ import './index.css';
 import Header from './components/ui/Header';
 import Hero from './components/ui/Hero';
 import About from './components/ui/About';
+import Skills from './components/ui/Skills';
 import Projects from './components/ui/Projects';
 import Education from './components/ui/Education';
 import Contact from './components/ui/Contact';
 import Footer from './components/ui/Footer';
 import Chatbot from './components/ui/Chatbot';
-import { useScrollProgress, useActiveSection } from './hooks/useTypingEffect';
+import { useScrollProgress, useActiveSection } from './hooks/useScroll';
 import { useTheme } from './hooks/useTheme';
 
 const SECTION_IDS = ['hero', 'about', 'skills', 'projects', 'education', 'contact'];
@@ -19,33 +20,36 @@ function App() {
 
   return (
     <>
-      {/* Scroll progress bar */}
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+
       <div
         className="scroll-progress"
         style={{ width: `${scrollProgress}%` }}
-        aria-hidden="true"
+        role="progressbar"
+        aria-label="Page scroll progress"
+        aria-valuenow={Math.round(scrollProgress)}
+        aria-valuemin={0}
+        aria-valuemax={100}
       />
 
-      {/* Background decorations */}
       <div className="bg-grid" aria-hidden="true" />
       <div className="bg-orb bg-orb-1" aria-hidden="true" />
       <div className="bg-orb bg-orb-2" aria-hidden="true" />
 
-      {/* Fixed header */}
       <Header activeSection={activeSection} theme={theme} onThemeChange={setTheme} />
 
-      {/* Main content */}
-      <main>
+      <main id="main-content">
         <Hero />
         <About />
+        <Skills />
         <Projects />
         <Education />
         <Contact />
       </main>
 
       <Footer />
-
-      {/* AI Chatbot */}
       <Chatbot />
     </>
   );

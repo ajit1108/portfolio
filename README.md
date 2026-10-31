@@ -36,8 +36,9 @@ API endpoints:
 - `POST /api/chat` — `{message, context}` → `{reply, source}`; 503 when `GEMINI_API_KEY` is unset
 - `POST /api/contact` — `{name, email, subject, message}` → `{status:"sent"}`; 503 when neither `BREVO_API_KEY` nor SMTP is configured
 
-When the AI key or mail settings are absent the site still works: the chatbot falls
-back to keyword answers and the contact form reports an honest error with a mailto link.
+When the AI key or mail settings are absent the site still works: the chatbot shows
+an honest "not configured" message with Ajit's email and phone, and the contact form
+reports an error with a mailto fallback. There are no canned AI answers.
 
 ---
 
@@ -83,6 +84,7 @@ Vite inlines this at build time, so **redeploy after changing it**.
 |---|---|---|
 | `FRONTEND_ORIGINS` | yes | Comma-separated browser origins allowed by CORS, e.g. `https://your-site.vercel.app` |
 | `GEMINI_API_KEY` | optional | Free key from https://aistudio.google.com/apikey |
+| `GEMINI_API_URL` | optional | Defaults to `https://generativelanguage.googleapis.com/v1beta`; override only for a proxy/mock |
 | `GEMINI_MODEL` | optional | Defaults to `gemini-2.0-flash` |
 | `BREVO_API_KEY` | optional | Brevo API key (v3). Preferred mail path — HTTPS, works on the free tier |
 | `CONTACT_FROM` | optional | Verified Brevo sender address (falls back to `MAIL_USERNAME`) |
@@ -135,7 +137,7 @@ cd frontend && npx vercel --prod
 
 | Symptom | Cause |
 |---|---|
-| Chat replies look canned | `GEMINI_API_KEY` unset — the keyword fallback is running |
+| Chat says the assistant isn't configured | `GEMINI_API_KEY` unset — the UI shows direct email/phone instead of guessing |
 | Contact form shows "Couldn't send your message" | No mail path configured (`BREVO_API_KEY` unset and SMTP unreachable) — check Render logs |
 | 503 `mail_send_failed` with `SMTP` in logs | Free-tier SMTP block; switch to Brevo HTTPS (`BREVO_API_KEY`) |
 | First request takes ~45 s | Render free instance was asleep |

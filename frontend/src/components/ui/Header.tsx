@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Menu, X, Code2 } from 'lucide-react';
 import ThemeSwitcher from './ThemeSwitcher';
 import { THEMES, type ThemeId } from '../../hooks/useTheme';
+import { scrollToSection } from '../../lib/scroll';
 
 const NAV_ITEMS = [
   { label: 'About',    href: '#about' },
@@ -38,9 +39,7 @@ export default function Header({ activeSection, theme, onThemeChange }: HeaderPr
   }, [mobileOpen]);
 
   const scrollTo = (href: string) => {
-    const id = href.replace('#', '');
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    scrollToSection(href.replace('#', ''));
     setMobileOpen(false);
   };
 

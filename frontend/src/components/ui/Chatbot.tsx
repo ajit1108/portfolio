@@ -1,47 +1,88 @@
-import { useState, useRef, useEffect } from 'react';
-import { Bot, X, Send, MessageSquare, Loader2 } from 'lucide-react';
-import { aiContext } from '../../data/portfolio';
+import { useEffect, useRef, useState } from 'react';
+import { AlertCircle, Bot, Send, Sparkles, Trash2, X } from 'lucide-react';
+import { aiContext, personalInfo } from '../../data/portfolio';
 import { apiUrl } from '../../lib/api';
 
 interface Message {
-  id: number;
-  role: 'user' | 'bot';
+  id: string;
+  role: 'user' | 'assistant';
   text: string;
 }
 
+const STORAGE_KEY = 'ajit-portfolio-chat';
+
 const SUGGESTIONS = [
   'What projects has Ajit built?',
-  'What tech stack does he use?',
-  'Tell me about CalmPulse',
-  'Where is Ajit from?',
+  'What is his backend tech stack?',
+  'Tell me about Keystone.',
+  'What is his education?',
+  'How can I contact Ajit?',
 ];
 
-let msgId = 0;
-const mkId = () => ++msgId;
+const mkId = () => crypto.randomUUID();
+
+const greeting = (): Message => ({
+  id: mkId(),
+  role: 'assistant',
+  text: "Hi, I'm Ajit's portfolio assistant. Ask me about his projects, skills, education or how to reach him.",
+});
+
+function loadMessages(): Message[] {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return [greeting()];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.length === 0) return [greeting()];
+    const valid = parsed.every(
+      (item) =>
+        item &&
+        typeof item === 'object' &&
+        typeof (item as Message).id === 'string' &&
+        ['user', 'assistant'].includes((item as Message).role) &&
+        typeof (item as Message).text === 'string'
+    );
+    return valid ? (parsed as Message[]) : [greeting()];
+  } catch {
+    return [greeting()];
+  }
+}
+
+class ChatError extends Error {}
 
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: mkId(),
-      role: 'bot',
-      text: "👋 Hi! I'm Ajit's portfolio assistant. Ask me anything about his skills, projects, or background!",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>(loadMessages);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [lastFailed, setLastFailed] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (open) bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, open]);
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+  }, [messages]);
 
-  const sendMessage = async (text: string) => {
-    if (!text.trim() || loading) return;
-    const userMsg: Message = { id: mkId(), role: 'user', text };
-    setMessages((prev) => [...prev, userMsg]);
-    setInput('');
+  useEffect(() => {
+    if (open) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+      inputRef.current?.focus();
+    }
+  }, [messages, open, error, loading]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [open]);
+
+  const ask = async (text: string) => {
     setLoading(true);
+    setError(null);
+    setLastFailed(null);
 
     try {
       const res = await fetch(apiUrl('/api/chat'), {
@@ -51,173 +92,203 @@ export default function Chatbot() {
       });
 
       if (res.ok) {
-        const data = await res.json();
-        setMessages((prev) => [
-          ...prev,
-          { id: mkId(), role: 'bot', text: data.reply ?? data.message ?? 'I couldn\'t get a response.' },
-        ]);
-      } else if (res.status === 429) {
-        setMessages((prev) => [
-          ...prev,
-          { id: mkId(), role: 'bot', text: "I'm getting a lot of questions right now — please try again in a minute." },
-        ]);
-      } else {
-        throw new Error();
+        const data: { reply?: unknown } = await res.json();
+        const reply = typeof data.reply === 'string' ? data.reply.trim() : '';
+        if (!reply) throw new ChatError('The assistant returned an empty answer. Please try again.');
+        setMessages((prev) => [...prev, { id: mkId(), role: 'assistant', text: reply }]);
+        return;
       }
-    } catch {
-      // Fallback: simple keyword-based responses when backend isn't running
-      const reply = getFallbackReply(text);
-      setMessages((prev) => [...prev, { id: mkId(), role: 'bot', text: reply }]);
+
+      if (res.status === 429) {
+        throw new ChatError('Too many questions right now. Please wait a minute and try again.');
+      }
+
+      const payload: { error?: string } | null = await res.json().catch(() => null);
+      if (res.status === 503 && payload?.error === 'ai_not_configured') {
+        throw new ChatError(
+          `The AI assistant isn't configured yet. You can reach Ajit directly at ${personalInfo.email} or ${personalInfo.phone}.`
+        );
+      }
+
+      throw new ChatError(
+        `The AI assistant is unavailable right now. Please email Ajit at ${personalInfo.email}.`
+      );
+    } catch (cause) {
+      const message = cause instanceof ChatError
+        ? cause.message
+        : `I couldn't reach the assistant. Please email Ajit at ${personalInfo.email}.`;
+      setError(message);
+      setLastFailed(text);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
+  const sendMessage = (raw: string) => {
+    const text = raw.trim();
+    if (!text || loading) return;
+    setMessages((prev) => [...prev, { id: mkId(), role: 'user', text }]);
+    setInput('');
+    void ask(text);
+  };
+
+  const retry = () => {
+    if (!lastFailed || loading) return;
+    void ask(lastFailed);
+  };
+
+  const clearConversation = () => {
+    setMessages([greeting()]);
+    setError(null);
+    setLastFailed(null);
+    setInput('');
+    sessionStorage.removeItem(STORAGE_KEY);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
       sendMessage(input);
     }
   };
 
   return (
     <>
-      {/* Floating trigger */}
       <button
-        className="chatbot-trigger"
-        onClick={() => setOpen((v) => !v)}
-        aria-label="Open AI assistant"
-        id="chatbot-trigger-btn"
+        className={`chatbot-trigger ${open ? 'is-open' : ''}`}
+        onClick={() => setOpen((value) => !value)}
+        aria-label={open ? 'Close AI assistant' : 'Open AI assistant'}
+        aria-expanded={open}
       >
-        {open ? <X size={22} /> : <MessageSquare size={22} />}
+        {open ? <X size={22} /> : <Sparkles size={22} />}
       </button>
 
-      {/* Chat window */}
       {open && (
-        <div className="chatbot-window" id="chatbot-window">
-          {/* Header */}
-          <div className="chatbot-header">
-            <div className="chatbot-header-info">
-              <div className="chatbot-avatar">
-                <Bot size={20} color="#fff" />
-              </div>
-              <div>
-                <div className="chatbot-name">Ajit's AI Assistant</div>
-                <div className="chatbot-status">Ask about his work</div>
-              </div>
-            </div>
-            <button className="chatbot-close" onClick={() => setOpen(false)} aria-label="Close chat">
-              <X size={14} />
-            </button>
-          </div>
+        <>
+          <div className="chatbot-backdrop" onClick={() => setOpen(false)} aria-hidden="true" />
 
-          {/* Messages */}
-          <div className="chatbot-messages" id="chatbot-messages">
-            {messages.map((msg) => (
-              <div key={msg.id} className={`chatbot-message ${msg.role}`}>
-                {msg.role === 'bot' && (
-                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Bot size={14} color="var(--accent-bright)" />
-                  </div>
-                )}
-                <div className={`message-bubble ${msg.role}`}>{msg.text}</div>
+          <div
+            className="chatbot-window"
+            role="dialog"
+            aria-modal="false"
+            aria-label="AI portfolio assistant"
+          >
+            <header className="chatbot-header">
+              <div className="chatbot-header-info">
+                <span className="chatbot-avatar" aria-hidden="true">
+                  <Bot size={20} />
+                </span>
+                <div>
+                  <p className="chatbot-name">Ajit&apos;s AI Assistant</p>
+                  <p className="chatbot-status">
+                    <span className={`chatbot-status-dot ${error ? 'offline' : ''}`} aria-hidden="true" />
+                    {error ? 'Offline — direct contact available' : 'Ask about his work'}
+                  </p>
+                </div>
               </div>
-            ))}
-            {loading && (
-              <div className="chatbot-message bot">
-                <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Bot size={14} color="var(--accent-bright)" />
+              <div className="chatbot-header-actions">
+                <button
+                  type="button"
+                  className="chatbot-icon-btn"
+                  onClick={clearConversation}
+                  aria-label="Clear conversation"
+                  title="Clear conversation"
+                >
+                  <Trash2 size={15} />
+                </button>
+                <button
+                  type="button"
+                  className="chatbot-icon-btn"
+                  onClick={() => setOpen(false)}
+                  aria-label="Close chat"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            </header>
+
+            <div className="chatbot-messages" aria-live="polite">
+              {messages.map((message) => (
+                <div key={message.id} className={`chatbot-message ${message.role}`}>
+                  {message.role === 'assistant' && (
+                    <span className="chatbot-message-avatar" aria-hidden="true">
+                      <Bot size={14} />
+                    </span>
+                  )}
+                  <div className={`message-bubble ${message.role}`}>{message.text}</div>
                 </div>
-                <div className="message-bubble bot" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <Loader2 size={14} className="spin-icon" style={{ animation: 'spin 0.7s linear infinite' }} />
-                  Thinking...
+              ))}
+
+              {loading && (
+                <div className="chatbot-message assistant">
+                  <span className="chatbot-message-avatar" aria-hidden="true">
+                    <Bot size={14} />
+                  </span>
+                  <div className="message-bubble assistant typing" aria-label="Assistant is thinking">
+                    <span /><span /><span />
+                  </div>
                 </div>
+              )}
+
+              {error && (
+                <div className="chatbot-error" role="alert">
+                  <AlertCircle size={16} aria-hidden="true" />
+                  <div>
+                    <p>{error}</p>
+                    {lastFailed && (
+                      <button type="button" className="chatbot-retry" onClick={retry}>
+                        Try again
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div ref={bottomRef} />
+            </div>
+
+            {messages.length <= 1 && !loading && !error && (
+              <div className="chatbot-suggestions" aria-label="Suggested questions">
+                {SUGGESTIONS.map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    type="button"
+                    className="chatbot-suggestion"
+                    onClick={() => sendMessage(suggestion)}
+                  >
+                    {suggestion}
+                  </button>
+                ))}
               </div>
             )}
-            <div ref={bottomRef} />
-          </div>
 
-          {/* Suggestion chips */}
-          {messages.length <= 2 && (
-            <div className="chatbot-suggestions">
-              {SUGGESTIONS.map((s) => (
-                <button
-                  key={s}
-                  className="chatbot-suggestion"
-                  onClick={() => sendMessage(s)}
-                >
-                  {s}
-                </button>
-              ))}
+            <div className="chatbot-input-row">
+              <input
+                ref={inputRef}
+                type="text"
+                className="chatbot-input"
+                placeholder="Ask about Ajit..."
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                onKeyDown={handleKeyDown}
+                maxLength={2000}
+                aria-label="Chat message"
+              />
+              <button
+                type="button"
+                className="chatbot-send"
+                onClick={() => sendMessage(input)}
+                disabled={!input.trim() || loading}
+                aria-label="Send message"
+              >
+                <Send size={15} />
+              </button>
             </div>
-          )}
 
-          {/* Input row */}
-          <div className="chatbot-input-row">
-            <input
-              type="text"
-              className="chatbot-input"
-              placeholder="Ask me anything..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              id="chatbot-input"
-              aria-label="Chat input"
-            />
-            <button
-              className="chatbot-send"
-              onClick={() => sendMessage(input)}
-              disabled={!input.trim() || loading}
-              aria-label="Send message"
-            >
-              <Send size={15} />
-            </button>
+            <p className="chatbot-hint">Answers use Ajit&apos;s portfolio data and may be imperfect.</p>
           </div>
-        </div>
+        </>
       )}
     </>
   );
-}
-
-// ── Fallback replies (keyword-based) when backend is offline ─────────────────
-function getFallbackReply(text: string): string {
-  const q = text.toLowerCase();
-
-  if (q.includes('calmpulse') || q.includes('burnout') || q.includes('stress')) {
-    return 'CalmPulse is an AI-powered burnout detection system built with Spring Boot, MongoDB, and Scikit-learn. It analyzes user inputs to predict stress levels and offers a RESTful API for auth and assessments. Live at calmpulse123.netlify.app!';
-  }
-  if (q.includes('socialnetwork') || q.includes('social network') || q.includes('websocket') || q.includes('chat')) {
-    return 'SocialNetwork is a full-stack social media platform using Spring Boot, React, MySQL, and WebSocket (STOMP/SockJS) for real-time messaging. It includes friend requests, posts, and role-based access control.';
-  }
-  if (q.includes('keystone')) {
-    return 'Keystone is a role-based field service management platform built with Spring Boot, Java, Spring Security, MongoDB, and JWT. It manages work orders end to end with SLA tracking, parts inventory, photo attachments, notifications, and reporting — with separate views for customers, dispatchers, technicians, and managers. Try it at keystones-web.onrender.com!';
-  }
-  if (q.includes('retailx') || q.includes('retail')) {
-    return 'RetailX is a retail management app built with React, REST APIs, and Node.js. It handles product inventory, sales tracking, and business operations with a modern responsive UI.';
-  }
-  if (q.includes('project')) {
-    return 'Ajit has built 4 projects: CalmPulse (AI burnout detection), SocialNetwork (full-stack social platform), RetailX (retail management app), and Keystone (field service management). Each showcases different aspects of his full-stack and ML skills.';
-  }
-  if (q.includes('skill') || q.includes('tech') || q.includes('stack') || q.includes('language')) {
-    return 'Ajit works with Java, JavaScript, and Python. On the backend, he uses Spring Boot and REST APIs. Frontend: React.js, HTML5, and CSS3. Databases: MongoDB and MySQL. He also has experience with Machine Learning, Scikit-learn, and tools like Git, Maven, and Vite.';
-  }
-  if (q.includes('education') || q.includes('degree') || q.includes('college') || q.includes('cgpa') || q.includes('gpa')) {
-    return 'Ajit is pursuing a B.Tech in Computer Science and Business Systems (CSBS) at KITCOE, Kolhapur (2023–2027) with a CGPA of 8.7. He scored 91.80% in 10th and 66.17% in 12th grade.';
-  }
-  if (q.includes('location') || q.includes('where') || q.includes('from') || q.includes('live')) {
-    return 'Ajit is based in Kolhapur, Maharashtra, India.';
-  }
-  if (q.includes('email') || q.includes('contact') || q.includes('reach')) {
-    return 'You can reach Ajit at +91 8308129957 or ajitbirajdar1108@gmail.com, connect on LinkedIn (linkedin.com/in/ajit-birajdar-5934822b0/), or check his work on GitHub (github.com/ajit1108).';
-  }
-  if (q.includes('available') || q.includes('hire') || q.includes('job') || q.includes('opportunit')) {
-    return 'Yes! Ajit is currently open to full-time opportunities, internships, and interesting freelance projects. Feel free to reach out via the contact form or email.';
-  }
-  if (q.includes('dsa') || q.includes('leetcode') || q.includes('algorithm')) {
-    return 'Ajit enjoys working on data structures and algorithms problems and focuses on writing clean, efficient solutions. Most of his practice shows up in the full-stack projects he ships.';
-  }
-  if (q.includes('hello') || q.includes('hi') || q.includes('hey')) {
-    return 'Hello! 👋 I\'m Ajit\'s portfolio assistant. I can tell you about his projects, skills, education, and more. What would you like to know?';
-  }
-  return 'Great question! I can tell you about Ajit\'s projects, skills, education, or how to get in touch. What would you like to know more about?';
 }
